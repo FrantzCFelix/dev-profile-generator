@@ -1,0 +1,24 @@
+{
+  "name": "dev-profile-generator",
+  "version": "1.0.0",
+  "description": "Generates a dev profile from users github information and makes a pdf",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrantzCFelix/dev-profile-generator.git"
+  },
+  "author": "Frantz Felix",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FrantzCFelix/dev-profile-generator/issues"
+  },
+  "homepage": "https://github.com/FrantzCFelix/dev-profile-generator#readme",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "inquirer": "^7.0.4",
+    "utill": "^0.1.3"
+  }
+}

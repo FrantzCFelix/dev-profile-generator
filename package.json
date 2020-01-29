@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/FrantzCFelix/dev-profile-generator#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "fs": "0.0.1-security",
     "inquirer": "^7.0.4",
     "utill": "^0.1.3"

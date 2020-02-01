@@ -15,11 +15,6 @@
       "name": "color",
       "message": "What is your favorite color?",
       "choices":["Green","Red","Blue","Gray"]
-    },
-    {
-      "type": "input",
-      "name": "location",
-      "message": "Where are you from?"
     }
   ]
   

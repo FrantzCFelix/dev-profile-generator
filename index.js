@@ -12,10 +12,14 @@ async function promptUser() {
     let githubInfo;
     try {
         const { github } = await inquirer.prompt(prompts);
+        //const { linkedin } = await inquirer.prompt(prompts);
+        //const { color } = await inquirer.prompt(prompts);
+
         const queryUrl = `https://api.github.com/users/${github}`;
         const starredQueryUrl = `${queryUrl}/starred`
         githubInfo = await getGithubInfo(queryUrl, starredQueryUrl);
-        //console.log(githubInfo[0]);
+        // changeColor(color);
+        //....(linkedin);
     }
     catch (err) { console.log(err); }
 
@@ -38,8 +42,30 @@ async function getGithubInfo(profileUrl, starredRepoUrl) {
 
 promptUser().then(val => {
 
-    console.log(val[0]);
-    console.log(val[1]);
+    let { public_repos } = val[0].data;
+    let { followers } = val[0].data;
+    let { following } = val[0].data;
+    let { name } = val[0].data;
+    let { blog } = val[0].data;
+    let { location } = val[0].data;
+    let { bio } = val[0].data;
+    let { avatar_url } = val[0].data;
+    let githubStars = val[1].data.length;
+
+    const answerObj = {
+        public_repos: public_repos,
+        followers: followers,
+        following: following,
+        name: name,
+        blog: blog,
+        location: location,
+        bio: bio,
+        avatar_url: avatar_url,
+        githubStars: githubStars
+    }
+    console.log(answerObj);
+    //generate-html(answerObj);
+    //console.log(public_repos, followers, following, name, blog, location, bio, githubStars);
 });
 
 

@@ -5,8 +5,7 @@ const fs = require('fs');
 const axios = require('axios');
 const inquirer = require('inquirer');
 const util = require('util');
-
-// const writeFileAsync = promisify(writeFile);
+const writeFileAsync = util.promisify(fs.writeFile);
 
 async function promptUser() {
     let githubInfo;
@@ -40,17 +39,17 @@ async function getGithubInfo(profileUrl, starredRepoUrl) {
 
 }
 
-promptUser().then(val => {
+promptUser().then(res => {
 
-    let { public_repos } = val[0].data;
-    let { followers } = val[0].data;
-    let { following } = val[0].data;
-    let { name } = val[0].data;
-    let { blog } = val[0].data;
-    let { location } = val[0].data;
-    let { bio } = val[0].data;
-    let { avatar_url } = val[0].data;
-    let githubStars = val[1].data.length;
+    let { public_repos } = res[0].data;
+    let { followers } = res[0].data;
+    let { following } = res[0].data;
+    let { name } = res[0].data;
+    let { blog } = res[0].data;
+    let { location } = res[0].data;
+    let { bio } = res[0].data;
+    let { avatar_url } = res[0].data;
+    let githubStars = res[1].data.length;
 
     const answerObj = {
         public_repos: public_repos,
@@ -64,38 +63,44 @@ promptUser().then(val => {
         githubStars: githubStars
     }
     console.log(answerObj);
-    //generate-html(answerObj);
+    generateHTML(answerObj);
     //console.log(public_repos, followers, following, name, blog, location, bio, githubStars);
 });
 
 
+async function generateHTML(answers) {
+    try {
+        const html = `
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+   <title>Document</title>
+ </head>
+ <body>
+   <div class="jumbotron jumbotron-fluid">
+   <div class="container">
+     <h1 class="display-4">Hi! My name is ${answers.name}</h1>
+     <p class="lead">I am from ${answers.location}.</p>
+     <h3>Example heading <span class="badge badge-secondary">Contact Me</span></h3>
+     <ul class="list-group">
+       <li class="list-group-item">My GitHub username is ${answers.github}</li>
+       <li class="list-group-item">PublicRepos: ${answers.public_repos}</li>
+       <li class="list-group-item">followers: ${answers.followers}</li>
+       <li class="list-group-item">following: ${answers.following}</li>
+       <li class="list-group-item">Stars: ${answers.githubStars}</li>
 
+     </ul>
+   </div>
+ </div>
+ </body>
+ </html>`;
 
-// function generateHTML(answers) {
-//   return `
-// <!DOCTYPE html>
-// <html lang="en">
-// <head>
-//   <meta charset="UTF-8">
-//   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-//   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-//   <title>Document</title>
-// </head>
-// <body>
-//   <div class="jumbotron jumbotron-fluid">
-//   <div class="container">
-//     <h1 class="display-4">Hi! My name is ${answers.name}</h1>
-//     <p class="lead">I am from ${answers.location}.</p>
-//     <h3>Example heading <span class="badge badge-secondary">Contact Me</span></h3>
-//     <ul class="list-group">
-//       <li class="list-group-item">My GitHub username is ${answers.github}</li>
-//       <li class="list-group-item">LinkedIn: ${answers.linkedin}</li>
-//     </ul>
-//   </div>
-// </div>
-// </body>
-// </html>`;
-// }
+        await writeFileAsync('index.html', html);
+    } catch (err) { console.log(err); }
+}
 
 // async function init() {
 //   console.log('initializing...');

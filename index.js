@@ -6,6 +6,8 @@ const axios = require('axios');
 const inquirer = require('inquirer');
 const util = require('util');
 const writeFileAsync = util.promisify(fs.writeFile);
+const puppeteer = require('puppeteer');
+const path = require('path');
 
 async function promptUser() {
     let githubInfo;
@@ -99,7 +101,21 @@ async function generateHTML(answers) {
  </html>`;
 
         await writeFileAsync('index.html', html);
+        await printPDF();
     } catch (err) { console.log(err); }
+}
+
+
+ 
+async function printPDF() {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.goto(`file://${path.resolve(__dirname, "index.html")}`, {waitUntil: 'networkidle0'});
+  const pdf = await page.pdf({ format: 'A4' });
+  await writeFileAsync('test.pdf', pdf,'binary');
+ 
+  await browser.close();
+  return pdf;
 }
 
 // async function init() {

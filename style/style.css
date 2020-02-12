@@ -1,0 +1,9 @@
+.row-1
+{
+margin-bottom: 100px;
+
+}
+
+html {
+    -webkit-print-color-adjust: exact;
+  }

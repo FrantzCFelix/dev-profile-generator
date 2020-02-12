@@ -51,6 +51,7 @@ promptUser().then(res => {
     let { location } = res[0].data;
     let { bio } = res[0].data;
     let { avatar_url } = res[0].data;
+    let { html_url } = res[0].data;
     let githubStars = res[1].data.length;
 
     const answerObj = {
@@ -62,7 +63,8 @@ promptUser().then(res => {
         location: location,
         bio: bio,
         avatar_url: avatar_url,
-        githubStars: githubStars
+        githubStars: githubStars,
+        html_url: html_url
     }
     console.log(answerObj);
     generateHTML(answerObj);
@@ -73,32 +75,152 @@ promptUser().then(res => {
 async function generateHTML(answers) {
     try {
         const html = `
- <!DOCTYPE html>
- <html lang="en">
- <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-   <title>Document</title>
- </head>
- <body>
-   <div class="jumbotron jumbotron-fluid">
-   <div class="container">
-     <h1 class="display-4">Hi! My name is ${answers.name}</h1>
-     <p class="lead">I am from ${answers.location}.</p>
-     <h3>Example heading <span class="badge badge-secondary">Contact Me</span></h3>
-     <ul class="list-group">
-       <li class="list-group-item">My GitHub username is ${answers.github}</li>
-       <li class="list-group-item">PublicRepos: ${answers.public_repos}</li>
-       <li class="list-group-item">followers: ${answers.followers}</li>
-       <li class="list-group-item">following: ${answers.following}</li>
-       <li class="list-group-item">Stars: ${answers.githubStars}</li>
+        <!DOCTYPE html>
+<html>
 
-     </ul>
-   </div>
- </div>
- </body>
- </html>`;
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.0/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="./style/style.css">
+    <!-- <link rel="stylesheet" href="style/debug.css"> -->
+</head>
+
+<body>
+    <section class="section hero is-primary is-small">
+        <div class="hero-body">
+            <article class="media">
+
+                <div class='column is-12 has-text-centered'>
+                    <div class='card equal-height'>
+                        <div class='card-content'>
+                            <!-- Place image inside .level within your card element -->
+                            <nav class="level">
+                                <div class="level-item has-text-centered">
+                                    <figure class='image is-128x128'><img class = "is-rounded"
+                                            src='https://avatars0.githubusercontent.com/u/46702267?v=4'></figure>
+                                </div>
+                            </nav>
+                            <nav class="level">
+                                    <div class="level-item has-text-centered">
+                                      <h1>Hi!</h1>
+                                    </div>
+                                </nav>
+                                <nav class="level">
+                                        <div class="level-item has-text-centered">
+                                          <h2>My name is ${answers.name}!</h2>
+                                        </div>
+                                    </nav>
+                                    <nav class="level">
+                                            <div class="level-item has-text-centered">
+                                              <h3>${answers.bio}</h3>
+                                            </div>
+                                        </nav>
+                            <nav class="level is-mobile">
+                  
+                                    <div class="level-item">
+                                        <a class="level-item">
+                                            <span class="icon "><i class="fas fa-location-arrow"></i>${answers.location}</span>
+                                        </a>
+                                        <a class="level-item">
+                                            <span class="icon "><i class="fab fa-github-alt"></i>${answers.html_url}</span>
+                                        </a>
+                                        <a class="level-item">
+                                            <span class="icon "><i class="fas fa-rss"></i>${answers.blog}</span>
+                                        </a>
+                                    </div>
+                                </nav>
+                            <!-- And it'll be centered like so -->
+                        </div>
+                    </div>
+                </div>
+                
+        </div>
+       
+        </article>
+        </div>
+
+
+    </section>
+    <section class="section">
+        <div class="container row-1">
+            <div class="columns  is-variable is-6">
+                <div class="column  is-2">
+                </div>
+                <div class="column notification is-primary is-3">
+                    Public Repositories: ${answers.public_repos}
+                </div>
+                <div class="column is-1">
+                </div>
+
+                <div class="column notification is-primary is-3">
+                    Followers: ${answers.followers}
+                </div>
+                <div class="column is-2">
+
+                </div>
+            </div>
+        </div>
+        <div class="container row-2">
+            <div class="columns is-variable is-6">
+                <div class="column is-2">
+                </div>
+                <div class="column notification is-primary is-3">
+                    GitHub Stars: ${answers.githubStars}
+                </div>
+                <div class="column is-1">
+                </div>
+
+                <div class="column notification is-primary is-3">
+                    Following: ${answers.following}
+                </div>
+                <div class="column is-2">
+                </div>
+            </div>
+        </div>
+
+        </div>
+
+
+        <!-- <div class="tile is-ancestor">
+                    <div class="column ">
+                        <div class="tile is-vertical is-full">
+                            <div class="tile is-parent is-vertical ">
+                                <article class="tile is-child notification is-danger"> </article>
+                            </div>
+                            <div class="tile is-parent is-vertical ">
+                                <article class="tile is-child notification is-danger"></article>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column ">
+                        <div class="tile is-vertical is-full">
+                            <div class="tile is-parent is-vertical">
+                                <article class="tile is-child notification is-danger"> </article>
+                            </div>
+                            <div class="tile is-parent is-vertical ">
+                                <article class="tile is-child notification is-danger"></article>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> -->
+
+
+    </section>
+    <section class="section has-background-primary">
+        <footer class="footer  has-background-primary ">
+            <div class="content has-text-centered">
+               
+            </div>
+        </footer>
+    </section>
+</body>
+
+</html>`;
 
         await writeFileAsync('index.html', html);
         await printPDF();

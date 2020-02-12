@@ -6,11 +6,6 @@
       "message": "Enter your GitHub Username"
     },
     {
-      "type": "input",
-      "name": "linkedin",
-      "message": "Enter your LinkedIn URL."
-    },
-    {
       "type": "list",
       "name": "color",
       "message": "What is your favorite color?",

@@ -9,18 +9,53 @@ const writeFileAsync = util.promisify(fs.writeFile);
 const puppeteer = require('puppeteer');
 const path = require('path');
 
+
+
+promptUser().then(res => {
+    
+    const {
+        public_repos,
+        followers,
+        following,
+        name,
+        blog,
+        location,
+        bio,
+        avatar_url,
+        html_url
+    } = res[0].data;
+    const githubStars = res[1].data.length;
+    const profileColor = res[2];
+
+    const responseObj = {
+        public_repos: public_repos,
+        followers: followers,
+        following: following,
+        name: name,
+        blog: blog,
+        location: location,
+        bio: bio,
+        avatar_url: avatar_url,
+        githubStars: githubStars,
+        html_url: html_url,
+        color: profileColor
+    }
+    console.log(res);
+    generateHTML(responseObj);
+
+});
+
+
+
 async function promptUser() {
     let githubInfo;
     try {
-        const { github } = await inquirer.prompt(prompts);
-        //const { linkedin } = await inquirer.prompt(prompts);
-        //const { color } = await inquirer.prompt(prompts);
-
+        const { github, color } = await inquirer.prompt(prompts);
         const queryUrl = `https://api.github.com/users/${github}`;
         const starredQueryUrl = `${queryUrl}/starred`
         githubInfo = await getGithubInfo(queryUrl, starredQueryUrl);
-        // changeColor(color);
-        //....(linkedin);
+        githubInfo.push(color);
+     
     }
     catch (err) { console.log(err); }
 
@@ -41,39 +76,42 @@ async function getGithubInfo(profileUrl, starredRepoUrl) {
 
 }
 
-promptUser().then(res => {
-
-    let { public_repos } = res[0].data;
-    let { followers } = res[0].data;
-    let { following } = res[0].data;
-    let { name } = res[0].data;
-    let { blog } = res[0].data;
-    let { location } = res[0].data;
-    let { bio } = res[0].data;
-    let { avatar_url } = res[0].data;
-    let { html_url } = res[0].data;
-    let githubStars = res[1].data.length;
-
-    const answerObj = {
-        public_repos: public_repos,
-        followers: followers,
-        following: following,
-        name: name,
-        blog: blog,
-        location: location,
-        bio: bio,
-        avatar_url: avatar_url,
-        githubStars: githubStars,
-        html_url: html_url
-    }
-    console.log(answerObj);
-    generateHTML(answerObj);
-    //console.log(public_repos, followers, following, name, blog, location, bio, githubStars);
-});
 
 
-async function generateHTML(answers) {
+async function generateHTML(response) {
     try {
+        let bulmaColor1 = "";
+        let bumlaColor2 = "";
+        switch (response.color) {
+            case 'Green':
+                bulmaColor1 = "is-success";
+                bumlaColor2 = "has-background-success";
+                break;
+            case 'Blue':
+                bulmaColor1 = "is-link";
+                bumlaColor2 = "has-background-link";
+                break;
+            case 'Red':
+                bulmaColor1 = "is-danger";
+                bumlaColor2 = "has-background-danger";
+                break;
+            case 'Yellow':
+                bulmaColor1 = "is-warning";
+                bumlaColor2 = "has-background-warning";
+                break;
+            case 'Spring Green':
+                bulmaColor1 = "is-primary";
+                bumlaColor2 = "has-background-primary";
+                break;
+            case 'Azure':
+                bulmaColor1 = "is-info";
+                bumlaColor2 = "has-background-info";
+                break;
+            default:
+                bulmaColor1 = "is-primary";
+                bumlaColor2 = "has-background-primary";
+        }
+
         const html = `
         <!DOCTYPE html>
 <html>
@@ -81,7 +119,7 @@ async function generateHTML(answers) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello Bulma!</title>
+    <title>Hello Developer!</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
@@ -90,7 +128,7 @@ async function generateHTML(answers) {
 </head>
 
 <body>
-    <section class="section hero is-primary is-small">
+    <section class="section hero ${bulmaColor1} is-small">
         <div class="hero-body">
             <article class="media">
 
@@ -111,25 +149,25 @@ async function generateHTML(answers) {
                                 </nav>
                                 <nav class="level">
                                         <div class="level-item has-text-centered">
-                                          <h2>My name is ${answers.name}!</h2>
+                                          <h2>My name is ${response.name}!</h2>
                                         </div>
                                     </nav>
                                     <nav class="level">
                                             <div class="level-item has-text-centered">
-                                              <h3>${answers.bio}</h3>
+                                              <h3>${response.bio}</h3>
                                             </div>
                                         </nav>
                             <nav class="level is-mobile">
                   
                                     <div class="level-item">
                                         <a class="level-item">
-                                            <span class="icon "><i class="fas fa-location-arrow"></i>${answers.location}</span>
+                                            <span class="icon "><i class="fas fa-location-arrow"></i>${response.location}</span>
                                         </a>
                                         <a class="level-item">
-                                            <span class="icon "><i class="fab fa-github-alt"></i>${answers.html_url}</span>
+                                            <span class="icon "><i class="fab fa-github-alt"></i>${response.html_url}</span>
                                         </a>
                                         <a class="level-item">
-                                            <span class="icon "><i class="fas fa-rss"></i>${answers.blog}</span>
+                                            <span class="icon "><i class="fas fa-rss"></i>${response.blog}</span>
                                         </a>
                                     </div>
                                 </nav>
@@ -150,14 +188,14 @@ async function generateHTML(answers) {
             <div class="columns  is-variable is-6">
                 <div class="column  is-2">
                 </div>
-                <div class="column notification is-primary is-3">
-                    Public Repositories: ${answers.public_repos}
+                <div class="column notification ${bulmaColor1} is-3">
+                    Public Repositories: ${response.public_repos}
                 </div>
                 <div class="column is-1">
                 </div>
 
-                <div class="column notification is-primary is-3">
-                    Followers: ${answers.followers}
+                <div class="column notification ${bulmaColor1} is-3">
+                    Followers: ${response.followers}
                 </div>
                 <div class="column is-2">
 
@@ -168,14 +206,14 @@ async function generateHTML(answers) {
             <div class="columns is-variable is-6">
                 <div class="column is-2">
                 </div>
-                <div class="column notification is-primary is-3">
-                    GitHub Stars: ${answers.githubStars}
+                <div class="column notification ${bulmaColor1} is-3">
+                    GitHub Stars: ${response.githubStars}
                 </div>
                 <div class="column is-1">
                 </div>
 
-                <div class="column notification is-primary is-3">
-                    Following: ${answers.following}
+                <div class="column notification ${bulmaColor1} is-3">
+                    Following: ${response.following}
                 </div>
                 <div class="column is-2">
                 </div>
@@ -185,34 +223,9 @@ async function generateHTML(answers) {
         </div>
 
 
-        <!-- <div class="tile is-ancestor">
-                    <div class="column ">
-                        <div class="tile is-vertical is-full">
-                            <div class="tile is-parent is-vertical ">
-                                <article class="tile is-child notification is-danger"> </article>
-                            </div>
-                            <div class="tile is-parent is-vertical ">
-                                <article class="tile is-child notification is-danger"></article>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column ">
-                        <div class="tile is-vertical is-full">
-                            <div class="tile is-parent is-vertical">
-                                <article class="tile is-child notification is-danger"> </article>
-                            </div>
-                            <div class="tile is-parent is-vertical ">
-                                <article class="tile is-child notification is-danger"></article>
-                            </div>
-                        </div>
-                    </div>
-
-                </div> -->
-
-
     </section>
-    <section class="section has-background-primary">
-        <footer class="footer  has-background-primary ">
+    <section class="section ${bumlaColor2}">
+        <footer class="footer  ${bumlaColor2} ">
             <div class="content has-text-centered">
                
             </div>
@@ -228,64 +241,14 @@ async function generateHTML(answers) {
 }
 
 
- 
+
 async function printPDF() {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.goto(`file://${path.resolve(__dirname, "index.html")}`, {waitUntil: 'networkidle0'});
-  const pdf = await page.pdf({ format: 'A4' });
-  await writeFileAsync('test.pdf', pdf,'binary');
- 
-  await browser.close();
-  return pdf;
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(`file://${path.resolve(__dirname, "index.html")}`, { waitUntil: 'networkidle0' });
+    const pdf = await page.pdf({ format: 'A4' });
+    await writeFileAsync('test.pdf', pdf, 'binary');
+
+    await browser.close();
+    return pdf;
 }
-
-// async function init() {
-//   console.log('initializing...');
-//   try {
-//     const answers = await promptUser();
-
-//     const html = generateHTML(answers);
-
-//     await writeFileAsync('index.html', html);
-
-//     console.log('Successfully wrote to index.html');
-//   } catch (err) {
-//     console.error(err);
-//   }
-// }
-
-// init();
-
-
-
-// 'use strict';
-
-// const fs = require('fs');
-// const axios = require('axios');
-// const inquirer = require('inquirer');
-
-// inquirer
-//   .prompt({
-//     message: 'Enter your GitHub username:',
-//     name: 'username'
-//   })
-//   .then(({ username }) => {
-//     const queryUrl = `https://api.github.com/users/${username}/repos?per_page=100`;
-
-//     axios.get(queryUrl).then(res => {});
-//       const repoNames = res.data.map(repo => repo.name);
-
-
-//      repoNames = repoNames.join('\n');
-
-//       fs.writeFile('repos.txt', repoNames, err => {
-//         if (err) {
-//           throw err;
-//         }
-
-//         console.log(`Saved ${repoNames.length} repos`);
-//       });
-//     });
-//   });
-

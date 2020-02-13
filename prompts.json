@@ -9,7 +9,7 @@
       "type": "list",
       "name": "color",
       "message": "What is your favorite color?",
-      "choices":["Green","Red","Blue","Gray"]
+      "choices":["Green","Blue","Red","Yellow","Spring Green","Azure"]
     }
   ]
   

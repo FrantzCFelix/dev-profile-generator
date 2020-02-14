@@ -236,6 +236,10 @@ async function generateHTML(response) {
 </html>`;
 
         await writeFileAsync('index.html', html);
+        if(fs.existsSync(path.resolve(__dirname, "dev-profile.pdf")))
+        {
+            fs.unlinkSync(path.resolve(__dirname, "dev-profile.pdf"));
+        }        
         await printPDF();
     } catch (err) { console.log(err); }
 }
@@ -247,7 +251,7 @@ async function printPDF() {
     const page = await browser.newPage();
     await page.goto(`file://${path.resolve(__dirname, "index.html")}`, { waitUntil: 'networkidle0' });
     const pdf = await page.pdf({ format: 'A4' });
-    await writeFileAsync('test.pdf', pdf, 'binary');
+    await writeFileAsync('dev-profile.pdf', pdf, 'binary');
 
     await browser.close();
     return pdf;

@@ -112,6 +112,8 @@ async function generateHTML(response) {
                 bumlaColor2 = "has-background-primary";
         }
 
+        let googleMapLink = `https://www.google.com/maps/search/?api=1&query=${response.location.split(" ").join("+")}`;
+
         const html = `
         <!DOCTYPE html>
 <html>
@@ -154,20 +156,20 @@ async function generateHTML(response) {
                                     </nav>
                                     <nav class="level">
                                             <div class="level-item has-text-centered">
-                                              <h3>${response.bio}</h3>
+                                              <h3>Bio: ${response.bio}</h3>
                                             </div>
                                         </nav>
                             <nav class="level is-mobile">
                   
                                     <div class="level-item">
-                                        <a class="level-item">
+                                        <a  href = "${googleMapLink}" class="level-item">
                                             <span class="icon "><i class="fas fa-location-arrow"></i>${response.location}</span>
                                         </a>
-                                        <a class="level-item">
-                                            <span class="icon "><i class="fab fa-github-alt"></i>${response.html_url}</span>
+                                        <a  href = "${response.html_url}" class="level-item">
+                                            <span class="icon "><i class="fab fa-github-alt"></i>GitHub</span>
                                         </a>
-                                        <a class="level-item">
-                                            <span class="icon "><i class="fas fa-rss"></i>${response.blog}</span>
+                                        <a  href = "https://${response.blog}/index.html" class="level-item">
+                                            <span class="icon "><i class="fas fa-rss"></i>Blog</span>
                                         </a>
                                     </div>
                                 </nav>
@@ -252,7 +254,6 @@ async function printPDF() {
     await page.goto(`file://${path.resolve(__dirname, "index.html")}`, { waitUntil: 'networkidle0' });
     const pdf = await page.pdf({ format: 'A4' });
     await writeFileAsync('dev-profile.pdf', pdf, 'binary');
-
     await browser.close();
     return pdf;
 }
